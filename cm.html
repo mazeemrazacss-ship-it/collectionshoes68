@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection Shoes – Product Detail + Trending Graph</title>
+  <style>
+    /* ===== GLOBAL STYLES ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    :root {
+      --bg: #757575;
+      --card: #1a1a1a;
+      --text: white;
+      --whatsapp: #25D366;
+      --facebook: #4267B2;
+      --instagram: #C13584;
+      --tiktok: #000000;
+      --hover-blue: #0084ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111;
+      padding: 10px 25px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      flex-wrap: wrap;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    header .logo {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    header .logo:hover {
+      box-shadow: 0 0 25px 8px rgba(0,123,255,0.9);
+    }
+
+    header h2 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    /* ===== SEARCH BAR ===== */
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: #2a2a2a;
+      border-radius: 40px;
+      padding: 5px 5px 5px 15px;
+      border: 1px solid #444;
+    }
+
+    .search-container input {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 10px 5px;
+      font-size: 1rem;
+      width: 200px;
+      outline: none;
+    }
+
+    .search-container input::placeholder {
+      color: #aaa;
+    }
+
+    .search-container button {
+      background: #25D366;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .search-container button:hover {
+      background: #0084ff;
+    }
+
+    /* ===== NAVIGATION ===== */
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: #3b3b3b;
+      border-radius: 40px;
+      margin: 15px 10px;
+      padding: 12px 10px;
+    }
+
+    nav a {
+      color: white;
+      padding: 10px 24px;
+      text-decoration: none;
+      margin: 5px;
+      background: #25D366;
+      border-radius: 30px;
+      transition: 0.25s ease;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    nav a:hover {
+      background: var(--hover-blue);
+      transform: scale(1.05);
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      display: none;
+      padding: 30px 25px;
+      animation: fade 0.2s;
+    }
+
+    .active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.3; } to { opacity: 1; }
+    }
+
+    /* ===== PRODUCT GRID (cards clickable) ===== */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: 0.35s;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #333;
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.3s;
+      display: block;
+    }
+
+    .card:hover img {
+      transform: scale(1.02) translateY(-5px);
+    }
+
+    .card:hover {
+      box-shadow: 0 0 18px 4px rgba(0, 123, 255, 0.8);
+      border-color: #0084ff;
+    }
+
+    .card-body {
+      padding: 18px 12px;
+      text-align: center;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-body h3 {
+      margin-bottom: 6px;
+      font-size: 1.3rem;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #ffaa33;
+      font-size: 1.3rem;
+    }
+
+    .size-color-bio {
+      font-size: 0.9rem;
+      color: #ccc;
+      margin: 8px 0;
+    }
+
+    .card button {
+      background: #25D366;
+      border: none;
+      padding: 12px 18px;
+      color: white;
+      cursor: pointer;
+      border-radius: 40px;
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .card button:hover {
+      background: #1da85c;
+      transform: scale(0.98);
+    }
+
+    /* ===== PRODUCT DETAIL PAGE ===== */
+    .detail-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      border-radius: 30px;
+      padding: 30px;
+    }
+
+    .back-btn {
+      background: #25D366;
+      padding: 12px 25px;
+      border-radius: 40px;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .detail-img img {
+      width: 100%;
+      border-radius: 20px;
+      border: 2px solid #25D366;
+    }
+
+    .detail-info h1 {
+      font-size: 2.2rem;
+      margin-bottom: 15px;
+    }
+
+    .detail-price {
+      font-size: 2rem;
+      color: #ffaa33;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .detail-meta {
+      background: #333;
+      padding: 20px;
+      border-radius: 16px;
+      margin: 20px 0;
+    }
+
+    .detail-meta p {
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+
+    /* ===== TRENDING GRAPH ===== */
+    .graph-container {
+      background: #0a1a1f;
+      padding: 25px;
+      border-radius: 20px;
+      margin-top: 30px;
+      border: 1px solid #25D366;
+    }
+
+    .graph-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #00ffaa;
+    }
+
+    .graph-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .bar-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80px;
+    }
+
+    .bar-label {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .bar {
+      width: 40px;
+      background: linear-gradient(0deg, #25D366, #00acee);
+      border-radius: 10px 10px 0 0;
+      height: 150px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    .bar span {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: black;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+
+    /* ===== ADMIN REMOVE BUTTON ===== */
+    .admin-remove-btn {
+      background: #dc3545 !important;
+      margin-top: 5px !important;
+    }
+
+    .admin-remove-btn:hover {
+      background: #b02a37 !important;
+    }
+
+    /* ===== SOCIAL ===== */
+    .social {
+      text-align: center;
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .social a {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 22px;
+      border-radius: 40px;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+      gap: 8px;
+    }
+
+    .social a:hover {
+      opacity: 0.85;
+      transform: translateY(-3px);
+    }
+
+    .facebook { background: var(--facebook); }
+    .instagram { background: var(--instagram); }
+    .tiktok { background: var(--tiktok); }
+
+    .social img {
+      height: 22px;
+      width: 22px;
+      filter: brightness(0) invert(1);
+    }
+
+    /* ===== WHATSAPP FLOAT ===== */
+    .whatsapp-float {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #25D366;
+      padding: 14px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+      transition: 0.25s;
+      z-index: 999;
+    }
+
+    .whatsapp-float:hover {
+      transform: scale(1.1);
+    }
+
+    /* ===== OWNER MODAL ===== */
+    .owner-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s;
+    }
+
+    .owner-modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .owner-card {
+      background: #1e1e1e;
+      max-width: 400px;
+      width: 90%;
+      border-radius: 30px;
+      padding: 30px 25px;
+      text-align: center;
+      border: 2px solid #25D366;
+    }
+
+    .owner-card img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid white;
+      margin-bottom: 15px;
+    }
+
+    .owner-card h2 { color: white; }
+    .owner-card p { color: #ddd; margin: 8px 0; }
+    .close-btn {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 35px; height: 35px;
+      float: right;
+      cursor: pointer;
+    }
+
+    /* ===== ADMIN PANEL ===== */
+    #admin {
+      background: #1e1e1e;
+      padding: 35px;
+      border-radius: 24px;
+      max-width: 650px;
+      margin: 20px auto;
+    }
+
+    .web-update-card {
+      background: #0d2f44;
+      border: 2px solid #00acee;
+      border-radius: 24px;
+      padding: 25px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .code-editor {
+      background: #111;
+      padding: 20px;
+      border-radius: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .code-editor.show {
+      display: block;
+    }
+
+    .code-editor textarea {
+      width: 100%;
+      height: 350px;
+      background: #1a1a1a;
+      color: #0f0;
+      font-family: monospace;
+      padding: 15px;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 30px;
+      color: #ccc;
+      grid-column: 1 / -1;
+    }
+
+    footer {
+      background: #111;
+      padding: 25px 15px;
+      text-align: center;
+      margin-top: 60px;
+      border-top: 2px solid #25D366;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <img src="https://i.ibb.co/VY63Zzmb/Chat-GPT-Image-Feb-8-2026-08-46-47-PM.png" 
+           alt="Logo" class="logo" onclick="showOwnerDetails()"
+           onerror="this.src='https://via.placeholder.com/55x55/1a1a1a/ffffff?text=Shoes';">
+      <h2>👟 Collection Shoes</h2>
+    </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="🔍 Search shoes..." onkeyup="searchProducts()">
+      <button onclick="searchProducts()">Search</button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a onclick="showSection('home')">🏠 Home</a>
+    <a onclick="showSection('men')">👞 Men</a>
+    <a onclick="showSection('ladies')">👠 Ladies</a>
+    <a onclick="showSection('kids')">🧸 Kids</a>
+  </nav>
+
+  <!-- MAIN SECTIONS -->
+  <div id="home" class="section active">
+    <h2>✨ Welcome to Collection Shoes</h2>
+    <div class="products" id="allProducts"></div>
+    <!-- SOCIAL with UPDATED FACEBOOK LINK -->
+    <div class="social">
+      <a href="https://www.facebook.com/profile.php?id=100079991182321" target="_blank" class="facebook">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/facebook.png"> Facebook
+      </a>
+      <a href="https://www.instagram.com/collectionshoes68" target="_blank" class="instagram">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/instagram-new.png"> Instagram
+      </a>
+      <a href="https://www.tiktok.com/@collectionshoes68" target="_blank" class="tiktok">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/tiktok.png"> TikTok
+      </a>
+    </div>
+  </div>
+
+  <div id="men" class="section"><h2>👔 Men Collection</h2><div class="products" id="menProducts"></div></div>
+  <div id="ladies" class="section"><h2>💄 Ladies Collection</h2><div class="products" id="ladiesProducts"></div></div>
+  <div id="kids" class="section"><h2>🧒 Kids Collection</h2><div class="products" id="kidsProducts"></div></div>
+
+  <!-- PRODUCT DETAIL PAGE (hidden by default) -->
+  <div id="detailPage" class="section">
+    <div class="detail-container" id="detailContainer"></div>
+  </div>
+
+  <!-- ADMIN PANEL -->
+  <div id="admin" class="section" style="display: none;">
+    <h2>🔐 Admin Panel (AzeemRaza)</h2>
+    <!-- product upload fields -->
+    <div class="admin-group">
+      <label>📛 Product Name</label>
+      <input type="text" id="name" placeholder="e.g. Air Max 270">
+    </div>
+    <div class="admin-group">
+      <label>💰 Price (Rs)</label>
+      <input type="number" id="price" placeholder="e.g. 4999">
+    </div>
+    <div class="admin-group">
+      <label>📏 Sizes</label>
+      <input type="text" id="sizes" placeholder="e.g. 38,39,40,41">
+    </div>
+    <div class="admin-group">
+      <label>🎨 Colors</label>
+      <input type="text" id="colors" placeholder="e.g. Black, White">
+    </div>
+    <div class="admin-group">
+      <label>📝 Bio</label>
+      <textarea id="bio" placeholder="Short description..."></textarea>
+    </div>
+    <div class="admin-group">
+      <label>📁 Category</label>
+      <select id="category">
+        <option value="men">👞 Men</option>
+        <option value="ladies">👠 Ladies</option>
+        <option value="kids">🧸 Kids</option>
+      </select>
+    </div>
+    <div class="admin-group">
+      <label>🖼️ Image</label>
+      <input type="file" id="image" accept="image/*">
+    </div>
+    <button onclick="addProduct()">📤 UPLOAD PRODUCT</button>
+
+    <!-- WEB UPDATE CARD -->
+    <div class="web-update-card">
+      <h3>⚡ WEB UPDATE CENTER</h3>
+      <button onclick="toggleCodeEditor()">📝 Edit Website Code</button>
+      <div id="codeEditorContainer" class="code-editor">
+        <textarea id="htmlCodeEditor"></textarea>
+        <button class="save-btn" onclick="saveHtmlChanges()">💾 SAVE CHANGES</button>
+      </div>
+    </div>
+    <p style="color:#aaa; text-align:center; margin-top:20px;">🔐 Press Ctrl+A (Admin: AzeemRaza / 3230)</p>
+  </div>
+
+  <!-- WHATSAPP FLOAT -->
+  <a class="whatsapp-float" href="https://wa.me/923006864380" target="_blank">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/whatsapp.png" width="28" height="28">
+  </a>
+
+  <!-- FOOTER -->
+  <footer>🏬 Chowk Sarwar Shaheed - Pakistan<br>⚡ Powered By az_CODDER-1 — Graph + Remove Button</footer>
+
+  <!-- OWNER MODAL -->
+  <div id="ownerModal" class="owner-modal">
+    <div class="owner-card">
+      <button class="close-btn" onclick="closeOwnerDetails()">✖</button>
+      <img src="https://i.ibb.co/SXkBwX5Z/Screenshot-2026-02-09-191750.png" alt="Owner" onerror="this.src='https://via.placeholder.com/120x120/1a1a1a/ffffff?text=Owner';">
+      <h2>Azeem Raza</h2>
+      <p>📞 WhatsApp: 03006864380</p>
+      <p>🌍 Muslim, Pakistan - Chowk Sarwar Shaheed</p>
+      <p>👑 Owner & Founder</p>
+    </div>
+  </div>
+
+  <script>
+    // ========== GLOBAL ==========
+    let products = [];
+
+    // ========== ADMIN LOGIN (updated AzeemRaza / 3230) ==========
+    let adminAttempts = 0;
+    let locked = false;
+    let lockTimer = null;
+
+    document.addEventListener("keydown", function(e) {
+      if (e.ctrlKey && e.key.toLowerCase() === "a") {
+        e.preventDefault();
+        if (!locked) openAdminLogin();
+        else alert("⛔ Admin locked 30 sec");
+      }
+    });
+
+    function openAdminLogin() {
+      const user = prompt("👤 Admin Name:");
+      if (user === null) return;
+      const pass = prompt("🔑 Password:");
+      if (user === "AzeemRaza" && pass === "3230") {
+        adminAttempts = 0;
+        document.getElementById("admin").style.display = "block";
+        showSection("admin");
+        document.getElementById("htmlCodeEditor").value = document.documentElement.outerHTML;
+        alert("✅ Welcome AzeemRaza!");
+      } else {
+        adminAttempts++;
+        if (adminAttempts >= 3) {
+          locked = true;
+          alert("❌ 3 wrong attempts. Locked 30 sec.");
+          lockTimer = setTimeout(() => { locked = false; adminAttempts = 0; }, 30000);
+        } else alert(`❌ Wrong. Attempt ${adminAttempts}/3`);
+      }
+    }
+
+    // ========== OWNER CARD ==========
+    function showOwnerDetails() {
+      document.getElementById("ownerModal").classList.add("show");
+    }
+    function closeOwnerDetails() {
+      document.getElementById("ownerModal").classList.remove("show");
+    }
+
+    // ========== SECTION CONTROL ==========
+    function showSection(id) {
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      if (id === "admin") document.getElementById("admin").style.display = "block";
+      renderProducts();
+    }
+
+    // ========== SEARCH ==========
+    function searchProducts() {
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      if (query === "") { renderProducts(); return; }
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query) || (p.bio && p.bio.toLowerCase().includes(query)));
+      const activeId = document.querySelector(".section.active")?.id;
+      if (activeId === "home") renderFilteredProducts(filtered);
+      else { showSection("home"); renderFilteredProducts(filtered); }
+    }
+
+    function renderFilteredProducts(arr) {
+      const container = document.getElementById("allProducts");
+      container.innerHTML = "";
+      if (arr.length === 0) container.innerHTML = '<div class="empty-message">🔎 No matching shoes.</div>';
+      else arr.forEach(p => container.appendChild(createCardElement(p)));
+    }
+
+    // ========== ADD PRODUCT ==========
+    function addProduct() {
+      const name = document.getElementById("name").value.trim();
+      const price = document.getElementById("price").value.trim();
+      const sizes = document.getElementById("sizes").value.trim();
+      const colors = document.getElementById("colors").value.trim();
+      const bio = document.getElementById("bio").value.trim();
+      const category = document.getElementById("category").value;
+      const file = document.getElementById("image").files[0];
+      if (!name || !price || !file) { alert("Name, price, image required"); return; }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        products.push({
+          id: Date.now() + Math.random(),
+          name, price: Number(price), sizes: sizes || "All sizes", colors: colors || "Various",
+          bio: bio || "Premium quality", category, image: e.target.result
+        });
+        renderProducts();
+        // clear
+        document.getElementById("name").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("sizes").value = "";
+        document.getElementById("colors").value = "";
+        document.getElementById("bio").value = "";
+        document.getElementById("category").value = "men";
+        document.getElementById("image").value = "";
+        alert("✅ Product added!");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ========== REMOVE PRODUCT (Admin only) ==========
+    function removeProduct(productId, event) {
+      event.stopPropagation(); // prevent card click
+      if (confirm("Remove this product? It will be deleted permanently.")) {
+        products = products.filter(p => p.id !== productId);
+        renderProducts();
+        alert("❌ Product removed.");
+      }
+    }
+
+    // ========== CREATE CARD (clickable -> detail page) ==========
+    function createCardElement(product) {
+      const card = document.createElement("div"); 
+      card.className = "card";
+      card.onclick = () => showProductDetail(product);
+
+      const img = document.createElement("img");
+      img.src = product.image; 
+      img.alt = product.name;
+      img.onerror = function() { this.src = 'https://via.placeholder.com/400x300/333/fff?text=Shoe'; };
+
+      const cardBody = document.createElement("div"); 
+      cardBody.className = "card-body";
+
+      const title = document.createElement("h3"); 
+      title.textContent = product.name;
+      const priceEl = document.createElement("p"); 
+      priceEl.className = "price"; 
+      priceEl.textContent = `Rs ${product.price}`;
+      const infoEl = document.createElement("div"); 
+      infoEl.className = "size-color-bio";
+      infoEl.innerHTML = `<span>📏 ${product.sizes}</span><br><span>🎨 ${product.colors}</span>`;
+
+      const orderBtn = document.createElement("button");
+      orderBtn.textContent = "🛒 Order via WhatsApp";
+      orderBtn.onclick = function(e) {
+        e.stopPropagation();
+        const phone = "923006864380";
+        let msg = `👟 *New Order*%0A📌 ${product.name}%0A💰 Rs ${product.price}%0A📏 ${product.sizes}%0A🎨 ${product.colors}%0A📝 ${product.bio}`;
+        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+      };
+
+      cardBody.append(title, priceEl, infoEl, orderBtn);
+
+      // ---- ADMIN REMOVE BUTTON (visible only in admin section) ----
+      if (document.querySelector(".section.active")?.id === "admin") {
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "🗑 Remove Product";
+        removeBtn.className = "admin-remove-btn";
+        removeBtn.onclick = (e) => removeProduct(product.id, e);
+        cardBody.appendChild(removeBtn);
+      }
+
+      card.append(img, cardBody);
+      return card;
+    }
+
+    // ========== PRODUCT DETAIL PAGE with TRENDING GRAPH ==========
+    function showProductDetail(product) {
+      showSection("detailPage");
+      const container = document.getElementById("detailContainer");
+      
+      container.innerHTML = `
+        <button class="back-btn" onclick="showSection('home')">◀ Back to Home</button>
+        <div class="detail-grid">
+          <div class="detail-img">
+            <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/500x500/333/fff?text=Image';">
+          </div>
+          <div class="detail-info">
+            <h1>${product.name}</h1>
+            <div class="detail-price">Rs ${product.price}</div>
+            <div class="detail-meta">
+              <p><strong>📏 Sizes:</strong> ${product.sizes}</p>
+              <p><strong>🎨 Colors:</strong> ${product.colors}</p>
+              <p><strong>📝 Description:</strong> ${product.bio}</p>
+            </div>
+            <button style="width:100%; padding:15px;" onclick="window.open('https://wa.me/923006864380?text=I%20want%20to%20order%20${product.name}%20Rs${product.price}','_blank')">
+              🛒 ORDER NOW
+            </button>
+          </div>
+        </div>
+        <!-- TRENDING GRAPH - always up -->
+        <div class="graph-container">
+          <div class="graph-title">📈 TRENDING INSIGHT (Always Rising)</div>
+          <div class="graph-bars">
+            <div class="bar-item"><div class="bar" style="height:180px;"><span>🔥 95%</span></div><div class="bar-label">Today</div></div>
+            <div class="bar-item"><div class="bar" style="height:160px;"><span>📊 88%</span></div><div class="bar-label">This Week</div></div>
+            <div class="bar-item"><div class="bar" style="height:200px;"><span>⚡ 99%</span></div><div class="bar-label">Trending</div></div>
+            <div class="bar-item"><div class="bar" style="height:175px;"><span>🏆 92%</span></div><div class="bar-label">Demand</div></div>
+          </div>
+          <p style="color:#aaffaa; text-align:center; margin-top:20px;">✨ This product is in TOP TRENDING — high demand!</p>
+        </div>
+      `;
+    }
+
+    // ========== RENDER ALL ==========
+    function renderProducts() {
+      const c = {
+        all: document.getElementById("allProducts"),
+        men: document.getElementById("menProducts"),
+        ladies: document.getElementById("ladiesProducts"),
+        kids: document.getElementById("kidsProducts")
+      };
+      c.all.innerHTML = ""; c.men.innerHTML = ""; c.ladies.innerHTML = ""; c.kids.innerHTML = "";
+      
+      if (products.length === 0) {
+        c.all.innerHTML = '<div class="empty-message">👞 No products. Admin (Ctrl+A) to upload.</div>';
+        c.men.innerHTML = '<div class="empty-message">🧾 No men shoes.</div>';
+        c.ladies.innerHTML = '<div class="empty-message">🧾 No ladies shoes.</div>';
+        c.kids.innerHTML = '<div class="empty-message">🧾 No kids shoes.</div>';
+        return;
+      }
+
+      products.forEach(p => {
+        const card = createCardElement(p);
+        c.all.appendChild(card.cloneNode(true));
+        if (p.category === "men") c.men.appendChild(card.cloneNode(true));
+        else if (p.category === "ladies") c.ladies.appendChild(card.cloneNode(true));
+        else if (p.category === "kids") c.kids.appendChild(card.cloneNode(true));
+      });
+
+      if (c.men.children.length === 0) c.men.innerHTML = '<div class="empty-message">🚧 No men products.</div>';
+      if (c.ladies.children.length === 0) c.ladies.innerHTML = '<div class="empty-message">🚧 No ladies products.</div>';
+      if (c.kids.children.length === 0) c.kids.innerHTML = '<div class="empty-message">🚧 No kids products.</div>';
+    }
+
+    // ========== WEB EDITOR ==========
+    function toggleCodeEditor() {
+      document.getElementById("codeEditorContainer").classList.toggle("show");
+      document.getElementById("htmlCodeEditor").value = document.documentElement.outerHTML;
+    }
+    function saveHtmlChanges() {
+      const newHtml = document.getElementById("htmlCodeEditor").value;
+      const doc = document.open("text/html", "replace");
+      doc.write(newHtml);
+      doc.close();
+    }
+
+    // ========== DEMO ==========
+    (function demoProducts() {
+      if (products.length === 0) {
+        products.push({ id: 1, name: "Air Max Pulse", price: 5999, sizes: "40-44", colors: "Black/Red", bio: "Breathable mesh", category: "men", image: "https://via.placeholder.com/400x300/1e3c72/ffffff?text=Air+Max" });
+        products.push({ id: 2, name: "Glitter Heels", price: 4299, sizes: "36-39", colors: "Gold/Silver", bio: "Party wear", category: "ladies", image: "https://via.placeholder.com/400x300/8e44ad/ffffff?text=Heels" });
+        products.push({ id: 3, name: "Light Runners", price: 2799, sizes: "30-34", colors: "Blue/Green", bio: "Kids ultra light", category: "kids", image: "https://via.placeholder.com/400x300/27ae60/ffffff?text=Runners" });
+      }
+    })();
+
+    // initial
+    document.getElementById("admin").style.display = "none";
+    window.showSection = showSection;
+    window.addProduct = addProduct;
+    window.searchProducts = searchProducts;
+    window.showOwnerDetails = showOwnerDetails;
+    window.closeOwnerDetails = closeOwnerDetails;
+    window.toggleCodeEditor = toggleCodeEditor;
+    window.saveHtmlChanges = saveHtmlChanges;
+    window.removeProduct = removeProduct;
+    window.showProductDetail = showProductDetail;
+    renderProducts();
+  </script>
+</body>
+</html>
